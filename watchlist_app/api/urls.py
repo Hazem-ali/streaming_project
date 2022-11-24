@@ -18,9 +18,9 @@ urlpatterns = [
 #     path('stream/', Stream_APIView.as_view(), name='Stream List'),
 #     path('stream/<int:pk>', StreamPlatformDetails.as_view(), name='Stream Platform Details'),
     
+    path('stream/<int:pk>/reviews', ReviewList.as_view(), name='Stream Platform Details'),
     path('<int:pk>/review/', ReviewDetail.as_view(), name='Review a certain movie'),
     path('<int:pk>/review-create/', ReviewCreate.as_view(), name='Review a certain movie'),
 
-    path('review/', ReviewList.as_view(), name='Stream Platform Details'),
 
 ]
