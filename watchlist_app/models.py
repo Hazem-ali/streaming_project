@@ -3,7 +3,6 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 
-# Create your models here.
 
 
 class StreamPlatform(models.Model):
@@ -22,6 +21,9 @@ class WatchList(models.Model):
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    avg_rating = models.FloatField(default=0)
+    num_ratings = models.IntegerField(default=0)
+    
     def __str__(self) -> str:
         return self.title
 class Review(models.Model):
@@ -32,6 +34,9 @@ class Review(models.Model):
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
+
+
+
 
     def __str__(self) -> str:
         return f'{self.watchlist.title} => {self.rating}'
