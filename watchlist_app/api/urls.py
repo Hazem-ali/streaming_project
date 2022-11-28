@@ -19,7 +19,7 @@ urlpatterns = [
 #     path('stream/<int:pk>', StreamPlatformDetails.as_view(), name='Stream Platform Details'),
     
     path('stream/<int:pk>/reviews/', ReviewList.as_view(), name='Stream Platform Details'),
-    path('<int:pk>/review/', ReviewDetail.as_view(), name='Review a certain movie'),
+    path('<int:pk>/review/', ReviewDetail.as_view(), name='Get a review details'),
     path('<int:pk>/review-create/', ReviewCreate.as_view(), name='Review a certain movie'),
 
 

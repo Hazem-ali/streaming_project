@@ -10,7 +10,7 @@ from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from .permissions import ReviewUserOrReadOnly, AdminOrReadOnly
+from .permissions import IsReviewUserOrReadOnly, IsAdminOrReadOnly
 
 
 class ReviewCreate(generics.CreateAPIView):
@@ -49,7 +49,7 @@ class ReviewList(generics.ListCreateAPIView):
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     # to customize query based on incoming request, override this function instead of using queryset
     def get_queryset(self):
@@ -60,10 +60,12 @@ class ReviewList(generics.ListCreateAPIView):
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [ReviewUserOrReadOnly]
+    permission_classes = [IsReviewUserOrReadOnly]
 
 
 class WatchList_APIView(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request):
         WatchLists = WatchList.objects.all()
 
@@ -112,6 +114,8 @@ class MovieDetails(APIView):
 
 
 class StreamPlatform_ViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
+
     queryset = StreamPlatform.objects.all()
     serializer_class = StreamPlatformSerilizer
 
@@ -138,6 +142,8 @@ class StreamPlatform_ViewSet(viewsets.ModelViewSet):
 
 
 class Stream_APIView(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request):
         streams = StreamPlatform.objects.all()
         serializer = StreamPlatformSerilizer(streams, many=True)
