@@ -3,6 +3,7 @@ from .serializers import RegisterSerializer
 from rest_framework.response import Response
 
 from rest_framework.authtoken.models import Token
+from rest_framework import status
 
 # from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -37,5 +38,5 @@ class RegisterView(APIView):
             #     'access': str(refresh.access_token),
             # }
 
-            return Response(data)
+            return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors)

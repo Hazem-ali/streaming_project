@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'watchlist_app',
     'user_app',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -130,5 +131,27 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
+    # Apply Throttling across the entire website urls and all users
+    # 'DEFAULT_THROTTLE_CLASSES': [
+    #     'rest_framework.throttling.AnonRateThrottle',
+    #     'rest_framework.throttling.UserRateThrottle'
+    # ],
+    # ------------- Defining Throttle Rates -------------
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '3/day',  # for anonymous users
+        'user': '1000/day',  # for normal users
+        'stream-platform': '10/day',
+    },
+
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+
+
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    # 'PAGE_SIZE': 3
+      # number of items per page
+
+    'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',)
+
+
 }

@@ -12,6 +12,24 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from .permissions import IsReviewUserOrReadOnly, IsAdminOrReadOnly
 
+from .throttling import StreamPlatformThrottle
+
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+
+from .pagination import ReviewsPagination
+
+
+class UserReviewList(generics.ListCreateAPIView):
+
+    serializer_class = ReviewSerializer
+    # to customize query based on incoming request, override this function instead of using queryset
+    
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        return Review.objects.filter(review_user__username=username)
+
 
 class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
@@ -21,7 +39,7 @@ class ReviewCreate(generics.CreateAPIView):
         return Review.objects.all()
 
     def perform_create(self, serializer):
-        pk = self.kwargs.get('pk') # pk of the watchlist (passed in the url)
+        pk = self.kwargs.get('pk')  # pk of the watchlist (passed in the url)
         watchlist = WatchList.objects.get(pk=pk)
 
         # getting the user from request and searching for a review for this user
@@ -37,7 +55,8 @@ class ReviewCreate(generics.CreateAPIView):
             if watchlist.avg_rating == 0:
                 watchlist.avg_rating = serializer.validated_data['rating']
             else:
-                watchlist.avg_rating = (watchlist.avg_rating + serializer.validated_data['rating']) / 2
+                watchlist.avg_rating = (
+                    watchlist.avg_rating + serializer.validated_data['rating']) / 2
             watchlist.num_ratings += 1
 
         watchlist.save()
@@ -49,7 +68,10 @@ class ReviewList(generics.ListCreateAPIView):
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
-    # permission_classes = [IsAuthenticated]
+    # filter_backends = [filters.OrderingFilter]
+    # ordering_fields = ['review_user__username','rating']
+
+    pagination_class = ReviewsPagination
 
     # to customize query based on incoming request, override this function instead of using queryset
     def get_queryset(self):
@@ -118,6 +140,7 @@ class StreamPlatform_ViewSet(viewsets.ModelViewSet):
 
     queryset = StreamPlatform.objects.all()
     serializer_class = StreamPlatformSerilizer
+    throttle_classes = [StreamPlatformThrottle]
 
 
 # class StreamPlatform_ViewSet(viewsets.ViewSet):
